@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Idioma por defecto (inglés): úsase se o teléfono non está en galego nin castelán -->
+    <string name="app_name" translatable="false">ChamaXa</string>
+
+</resources>
