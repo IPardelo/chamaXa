@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Icono sencillo: cuadrícula 3x3 de colores sobre fondo negro -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path android:fillColor="#000000" android:pathData="M0,0h48v48h-48z" />
+    <path android:fillColor="#C62828" android:pathData="M4,4h12v12h-12z" />
+    <path android:fillColor="#1565C0" android:pathData="M18,4h12v12h-12z" />
+    <path android:fillColor="#2E7D32" android:pathData="M32,4h12v12h-12z" />
+    <path android:fillColor="#6A1B9A" android:pathData="M4,18h12v12h-12z" />
+    <path android:fillColor="#FFD600" android:pathData="M18,18h12v12h-12z" />
+    <path android:fillColor="#E65100" android:pathData="M32,18h12v12h-12z" />
+    <path android:fillColor="#AD1457" android:pathData="M4,32h12v12h-12z" />
+    <path android:fillColor="#00838F" android:pathData="M18,32h12v12h-12z" />
+    <path android:fillColor="#4E342E" android:pathData="M32,32h12v12h-12z" />
+</vector>
