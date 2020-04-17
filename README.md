@@ -56,6 +56,8 @@ chamaXa/
 │   ├── proguard-rules.pro
 │   └── src/main/
 │       ├── AndroidManifest.xml           # Permisos, tema e pantalla de inicio
+│       ├── java/es/ipardelo/chamaxa/
+│       │   └── MainActivity.kt           # Toda a lóxica e a interface
 │       └── res/
 │           ├── drawable/ic_launcher.xml  # Icona (grella de cores)
 │           ├── values/strings.xml        # Inglés (idioma por defecto)
