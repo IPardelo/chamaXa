@@ -10,6 +10,16 @@ import androidx.compose.ui.graphics.toArgb
 //  AXUSTES XERAIS (os contactos xa NON se configuran aquí, senón desde o móbil)
 // ═════════════════════════════════════════════════════════════════════════════
 
+/** Grella: entre 1 e 4 columnas e entre 1 e 4 filas (máximo 4 × 4 = 16 contactos). */
+private const val MAX_COLUMNAS = 4
+private const val MAX_FILAS = 4
+private const val NUM_SLOTS = MAX_COLUMNAS * MAX_FILAS
+private val OPCIONS_GRELLA = 1..4
+private const val COLUMNAS_POR_DEFECTO = 4
+private const val FILAS_POR_DEFECTO = 4
+private const val MAX_NOME = 20
+private const val LADO_FOTO_PX = 512
+
 /** Cores de alto contraste dispoñibles no selector. */
 val PALETA = listOf(
     Color(0xFFC62828), // vermello
@@ -37,6 +47,11 @@ data class Contacto(
     /** Só se pode chamar se está activo e ten un número. */
     val chamable: Boolean get() = activo && telefono.any { it.isDigit() }
     val baleiro: Boolean get() = nome.isBlank() && telefono.isBlank() && foto == null
+}
+
+/** Tamaño da grella da pantalla principal. */
+data class Grella(val columnas: Int, val filas: Int) {
+    val celas: Int get() = columnas * filas
 }
 
 fun contactoBaleiro(indice: Int) = Contacto(cor = PALETA[indice % PALETA.size].toArgb())
