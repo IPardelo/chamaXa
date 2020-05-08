@@ -1,10 +1,15 @@
 package es.ipardelo.chamaxa
 
+import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import org.json.JSONArray
+import org.json.JSONObject
+import java.io.File
 
 // ═════════════════════════════════════════════════════════════════════════════
 //  AXUSTES XERAIS (os contactos xa NON se configuran aquí, senón desde o móbil)
@@ -55,3 +60,88 @@ data class Grella(val columnas: Int, val filas: Int) {
 }
 
 fun contactoBaleiro(indice: Int) = Contacto(cor = PALETA[indice % PALETA.size].toArgb())
+
+object Almacen {
+    private const val PREFS = "configuracion_launcher"
+    private const val CLAVE_SLOTS = "slots_v1"
+    private const val CLAVE_LADO_ANTIGO = "lado_grella" // versións anteriores (grella cadrada)
+    private const val CLAVE_COLUMNAS = "columnas_grella"
+    private const val CLAVE_FILAS = "filas_grella"
+
+    private fun prefs(context: Context) =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+
+    fun cargarGrella(context: Context): Grella {
+        val p = prefs(context)
+        val antigo = p.getInt(CLAVE_LADO_ANTIGO, -1)
+        val columnas = p.getInt(CLAVE_COLUMNAS, if (antigo > 0) antigo else COLUMNAS_POR_DEFECTO)
+        val filas = p.getInt(CLAVE_FILAS, if (antigo > 0) antigo else FILAS_POR_DEFECTO)
+        return Grella(
+            columnas = columnas.takeIf { it in OPCIONS_GRELLA } ?: COLUMNAS_POR_DEFECTO,
+            filas = filas.takeIf { it in OPCIONS_GRELLA } ?: FILAS_POR_DEFECTO,
+        )
+    }
+
+    @SuppressLint("ApplySharedPref")
+    fun gardarGrella(context: Context, grella: Grella) {
+        prefs(context).edit()
+            .putInt(CLAVE_COLUMNAS, grella.columnas)
+            .putInt(CLAVE_FILAS, grella.filas)
+            .remove(CLAVE_LADO_ANTIGO)
+            .commit()
+    }
+
+    fun directorioFotos(context: Context): File =
+        File(context.filesDir, "fotos").apply { mkdirs() }
+
+    fun cargar(context: Context): List<Contacto> {
+        val gardados: List<Contacto> = try {
+            val json = prefs(context).getString(CLAVE_SLOTS, null)
+            if (json == null) {
+                emptyList()
+            } else {
+                val array = JSONArray(json)
+                List(array.length()) { i ->
+                    val o = array.getJSONObject(i)
+                    val foto = if (o.isNull("foto")) null
+                    else o.optString("foto").takeIf { it.isNotBlank() && File(it).exists() }
+                    Contacto(
+                        nome = o.optString("nome"),
+                        telefono = o.optString("telefono"),
+                        cor = o.optInt("cor", PALETA[i % PALETA.size].toArgb()),
+                        foto = foto,
+                        activo = o.optBoolean("activo", true),
+                    )
+                }
+            }
+        } catch (_: Exception) {
+            emptyList()
+        }
+        return List(NUM_SLOTS) { i -> gardados.getOrNull(i) ?: contactoBaleiro(i) }
+    }
+
+    // commit() en vez de apply(): queremos que quede escrito xa, por se apagan o móbil.
+    @SuppressLint("ApplySharedPref")
+    fun gardar(context: Context, slots: List<Contacto>) {
+        val array = JSONArray()
+        slots.forEach { c ->
+            array.put(
+                JSONObject()
+                    .put("nome", c.nome)
+                    .put("telefono", c.telefono)
+                    .put("cor", c.cor)
+                    .put("foto", c.foto ?: JSONObject.NULL)
+                    .put("activo", c.activo)
+            )
+        }
+        prefs(context).edit().putString(CLAVE_SLOTS, array.toString()).commit()
+    }
+
+    /** Borra as fotos copiadas que xa non usa ningún botón. */
+    fun limparFotosOrfas(context: Context, slots: List<Contacto>) {
+        val usadas = slots.mapNotNull { it.foto }.toSet()
+        directorioFotos(context).listFiles()?.forEach { ficheiro ->
+            if (ficheiro.absolutePath !in usadas) ficheiro.delete()
+        }
+    }
+}
