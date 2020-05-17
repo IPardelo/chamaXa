@@ -16,7 +16,7 @@ Unha pantalla de inicio para Android con botóns grandes de cores que chaman dir
 ![Android](https://img.shields.io/badge/Android-5.0+-3DDC84?style=flat-square&logo=android&logoColor=white)
 ![Gradle](https://img.shields.io/badge/Gradle-8.11-02303A?style=flat-square&logo=gradle&logoColor=white)
 ![Internet](https://img.shields.io/badge/Internet-non%20precisa-555555?style=flat-square)
-![Version](https://img.shields.io/badge/version-0.1.0-e9b44c?style=flat-square)
+![Version](https://img.shields.io/badge/version-0.2.0-e9b44c?style=flat-square)
 
 </div>
 
@@ -27,6 +27,10 @@ iconas, menús, notificacións e avisos que aparecen sen pedilos, e calquera toq
 acaba nunha pantalla da que non sabe saír. Os teléfonos "para maiores" son caros e
 tampouco se adaptan á familia de cada un. 'ChamaXa' é o contrario: botóns grandes cos
 nomes (e as caras) da xente da casa, e un toque para chamar.
+
+## Funcionalidades
+
+- 📴 **Sen Internet** — os contactos gárdanse só no teléfono; a app nin sequera ten permiso de Internet
 
 ## Configuración
 
@@ -67,6 +71,11 @@ chamaXa/
 ```
 
 ## Evolución por versión
+
+### v0.2.0
+- Modelo de contacto (nome, teléfono, cor, foto e activo) e de grella.
+- Persistencia en `SharedPreferences` con JSON, sen bibliotecas externas.
+- Paleta de 8 cores de alto contraste.
 
 ### v0.1.0
 - Proxecto Android con Kotlin e Jetpack Compose (Material 3), `minSdk 21` (Android 5.0).
