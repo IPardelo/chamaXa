@@ -1,12 +1,25 @@
 package es.ipardelo.chamaxa
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -145,3 +158,59 @@ object Almacen {
         }
     }
 }
+
+// ═════════════════════════════════════════════════════════════════════════════
+//  ACTIVITY
+// ═════════════════════════════════════════════════════════════════════════════
+
+class MainActivity : ComponentActivity() {
+
+    // O resultado dá igual: chamar() comproba o permiso en cada pulsación
+    // e, se non está concedido, abre o marcador (ACTION_DIAL).
+    private val solicitudePermisoChamada =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ocultarBarrasSistema()
+
+        if (savedInstanceState == null && !tenPermisoChamada(this)) {
+            solicitudePermisoChamada.launch(Manifest.permission.CALL_PHONE)
+        }
+
+        Almacen.limparFotosOrfas(this, Almacen.cargar(this))
+
+        setContent {
+            MaterialTheme(colorScheme = darkColorScheme()) {
+                App()
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        ocultarBarrasSistema()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        // Ao volver dunha chamada ou dun selector, as barras poden reaparecer.
+        if (hasFocus) ocultarBarrasSistema()
+    }
+
+    private fun ocultarBarrasSistema() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            hide(WindowInsetsCompat.Type.systemBars())
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+    }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+//  SISTEMA: chamadas, vibración, axenda, fotos, launcher
+// ═════════════════════════════════════════════════════════════════════════════
+
+private fun tenPermisoChamada(context: Context): Boolean =
+    ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) ==
+        PackageManager.PERMISSION_GRANTED
