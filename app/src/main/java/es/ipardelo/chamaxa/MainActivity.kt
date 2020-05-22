@@ -3,7 +3,9 @@ package es.ipardelo.chamaxa
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -214,3 +216,26 @@ class MainActivity : ComponentActivity() {
 private fun tenPermisoChamada(context: Context): Boolean =
     ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) ==
         PackageManager.PERMISSION_GRANTED
+
+/**
+ * Chama directamente con ACTION_CALL. Se non hai permiso ou algo falla,
+ * abre o marcador co número xa escrito (ACTION_DIAL). Nunca lanza excepcións.
+ */
+private fun chamar(context: Context, telefono: String) {
+    val numero = telefono.filter { it.isDigit() || it == '+' }
+    val uri = Uri.fromParts("tel", numero, null)
+
+    if (tenPermisoChamada(context)) {
+        try {
+            context.startActivity(Intent(Intent.ACTION_CALL, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            return
+        } catch (_: Exception) {
+            // SecurityException, ActivityNotFoundException… → probamos o marcador.
+        }
+    }
+    try {
+        context.startActivity(Intent(Intent.ACTION_DIAL, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+    } catch (_: Exception) {
+        // Sen app de teléfono: non facemos nada, pero a app non se pecha.
+    }
+}
