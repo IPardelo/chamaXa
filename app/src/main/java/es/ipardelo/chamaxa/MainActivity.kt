@@ -12,11 +12,22 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -29,6 +40,13 @@ import java.io.File
 // ═════════════════════════════════════════════════════════════════════════════
 //  AXUSTES XERAIS (os contactos xa NON se configuran aquí, senón desde o móbil)
 // ═════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Tamaño MÁXIMO do nome nos botóns. Se o nome non cabe (p. ex. en 4 × 4),
+ * redúcese automaticamente ata TAMANO_TEXTO_MIN sen partir as palabras.
+ */
+private val TAMANO_TEXTO = 32.sp
+private val TAMANO_TEXTO_MIN = 14.sp
 
 /** Grella: entre 1 e 4 columnas e entre 1 e 4 filas (máximo 4 × 4 = 16 contactos). */
 private const val MAX_COLUMNAS = 4
@@ -207,6 +225,41 @@ class MainActivity : ComponentActivity() {
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
     }
+}
+
+/**
+ * Texto en negriña que reduce o seu tamaño ata caber no espazo dispoñible
+ * (máximo 2 liñas e sen partir ningunha palabra pola metade).
+ */
+@Composable
+fun TextoAxustado(
+    texto: String,
+    tamanoMax: TextUnit,
+    tamanoMin: TextUnit = TAMANO_TEXTO_MIN,
+) {
+    val palabras = remember(texto) { texto.trim().split(Regex("\\s+")).size }
+    var tamano by remember(texto, tamanoMax) { mutableStateOf(tamanoMax) }
+    var listo by remember(texto, tamanoMax) { mutableStateOf(false) }
+
+    Text(
+        text = texto,
+        fontSize = tamano,
+        lineHeight = tamano * 1.05f,
+        fontWeight = FontWeight.Bold,
+        textAlign = TextAlign.Center,
+        maxLines = 2,
+        overflow = TextOverflow.Clip,
+        // Non se debuxa ata atopar o tamaño correcto, para evitar parpadeos.
+        modifier = Modifier.drawWithContent { if (listo) drawContent() },
+        onTextLayout = { resultado ->
+            val palabraPartida = resultado.lineCount > palabras
+            if ((resultado.hasVisualOverflow || palabraPartida) && tamano > tamanoMin) {
+                tamano = (tamano.value * 0.9f).coerceAtLeast(tamanoMin.value).sp
+            } else {
+                listo = true
+            }
+        },
+    )
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
