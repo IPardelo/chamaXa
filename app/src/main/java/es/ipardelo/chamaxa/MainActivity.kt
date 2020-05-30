@@ -10,8 +10,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
@@ -19,14 +31,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
@@ -227,6 +245,52 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/** Aspecto visual dun botón de contacto (reutilizado na grella, na configuración e na vista previa). */
+@Composable
+fun AparenciaBoton(
+    contacto: Contacto,
+    modifier: Modifier = Modifier,
+    tamanoTexto: TextUnit = TAMANO_TEXTO,
+) {
+    val fondo = Color(contacto.cor)
+    val texto = corTexto(fondo)
+    val foto = rememberFoto(contacto.foto)
+
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(22.dp),
+        color = fondo,
+        contentColor = texto,
+        shadowElevation = 4.dp,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            if (foto != null) {
+                Image(
+                    bitmap = foto,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .weight(1f, fill = false)
+                        .aspectRatio(1f)
+                        .clip(CircleShape)
+                        .border(3.dp, texto, CircleShape),
+                )
+                Spacer(Modifier.height(6.dp))
+            }
+            TextoAxustado(
+                texto = contacto.nome,
+                tamanoMax = tamanoTexto,
+            )
+        }
+    }
+}
+
 /**
  * Texto en negriña que reduce o seu tamaño ata caber no espazo dispoñible
  * (máximo 2 liñas e sen partir ningunha palabra pola metade).
@@ -261,6 +325,14 @@ fun TextoAxustado(
         },
     )
 }
+
+// ═════════════════════════════════════════════════════════════════════════════
+//  UTILIDADES DE UI
+// ═════════════════════════════════════════════════════════════════════════════
+
+/** Texto negro sobre fondos claros (p. ex. amarelo) e branco sobre escuros. */
+private fun corTexto(fondo: Color): Color =
+    if (fondo.luminance() > 0.5f) Color.Black else Color.White
 
 // ═════════════════════════════════════════════════════════════════════════════
 //  SISTEMA: chamadas, vibración, axenda, fotos, launcher
