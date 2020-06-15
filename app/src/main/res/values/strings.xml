@@ -3,4 +3,5 @@
     <!-- Idioma por defecto (inglés): úsase se o teléfono non está en galego nin castelán -->
     <string name="app_name" translatable="false">ChamaXa</string>
 
+    <string name="aviso_sen_contactos">Press and hold the top-left corner for 10 seconds to set up the contacts</string>
 </resources>

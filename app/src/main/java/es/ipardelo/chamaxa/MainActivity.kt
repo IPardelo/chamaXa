@@ -8,18 +8,27 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +36,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,7 +48,11 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -50,6 +64,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
@@ -241,6 +256,99 @@ class MainActivity : ComponentActivity() {
         WindowInsetsControllerCompat(window, window.decorView).apply {
             hide(WindowInsetsCompat.Type.systemBars())
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+    }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+//  PANTALLA PRINCIPAL (a que ve a persoa maior)
+// ═════════════════════════════════════════════════════════════════════════════
+
+@Composable
+fun PantallaPrincipal(slots: List<Contacto>, grella: Grella, onAccesoAdmin: () -> Unit) {
+    // Botón Atrás anulado: non pecha nin minimiza nada.
+    BackHandler(enabled = true) { /* Non facer nada */ }
+
+    val context = LocalContext.current
+    val haptic = LocalHapticFeedback.current
+
+    var bloqueado by remember { mutableStateOf(false) }
+    var indicePulsado by remember { mutableStateOf<Int?>(null) }
+
+    LaunchedEffect(bloqueado) {
+        if (bloqueado) {
+            delay(BLOQUEO_CHAMADA_MS)
+            bloqueado = false
+            indicePulsado = null
+        }
+    }
+
+    // Só contan as celas visibles co tamaño de grella actual.
+    val senContactos = slots.take(grella.celas).none { it.chamable }
+    val separacion = if (maxOf(grella.columnas, grella.filas) >= 4) 4.dp else 6.dp
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .windowInsetsPadding(WindowInsets.displayCutout)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(separacion)
+        ) {
+            for (fila in 0 until grella.filas) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                ) {
+                    for (columna in 0 until grella.columnas) {
+                        val indice = fila * grella.columnas + columna
+                        val contacto = slots[indice]
+                        CelaPrincipal(
+                            contacto = contacto,
+                            atenuado = bloqueado && indicePulsado != indice,
+                            detectarAcceso = indice == 0,
+                            mostrarPista = senContactos && indice == 0,
+                            onTap = {
+                                if (!bloqueado && contacto.chamable) {
+                                    bloqueado = true
+                                    indicePulsado = indice
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    vibrar(context)
+                                    chamar(context, contacto.telefono)
+                                }
+                            },
+                            onAccesoAdmin = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                vibrar(context, 500)
+                                onAccesoAdmin()
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight()
+                                .padding(separacion),
+                        )
+                    }
+                }
+            }
+        }
+
+        // Aviso de primeira execución (non captura toques: a esquina segue funcionando).
+        if (senContactos) {
+            Text(
+                text = stringResource(R.string.aviso_sen_contactos),
+                color = Color.White,
+                fontSize = 26.sp,
+                lineHeight = 32.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(32.dp),
+            )
         }
     }
 }
