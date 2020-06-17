@@ -4,4 +4,6 @@
     <string name="app_name" translatable="false">ChamaXa</string>
 
     <string name="aviso_sen_contactos">Press and hold the top-left corner for 10 seconds to set up the contacts</string>
+    <string name="cd_chamar">Call %1$s</string>
+    <string name="pista_acceso">⚙\nHold\n10 s</string>
 </resources>

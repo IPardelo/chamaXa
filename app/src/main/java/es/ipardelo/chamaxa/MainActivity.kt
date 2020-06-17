@@ -14,6 +14,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +34,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -40,20 +44,27 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -349,6 +360,98 @@ fun PantallaPrincipal(slots: List<Contacto>, grella: Grella, onAccesoAdmin: () -
                     .align(Alignment.Center)
                     .padding(32.dp),
             )
+        }
+    }
+}
+
+/**
+ * Unha cela da grella. Detecta o toque manualmente para poder distinguir:
+ *  · toque normal (soltar antes de 10 s) → chamada
+ *  · manter 10 s seguidos (só na cela 1)  → acceso á configuración, SEN chamar ao soltar
+ */
+@Composable
+fun CelaPrincipal(
+    contacto: Contacto,
+    atenuado: Boolean,
+    detectarAcceso: Boolean,
+    mostrarPista: Boolean,
+    onTap: () -> Unit,
+    onAccesoAdmin: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val tapActual by rememberUpdatedState(onTap)
+    val accesoActual by rememberUpdatedState(onAccesoAdmin)
+    var premido by remember { mutableStateOf(false) }
+    val descricionChamar = stringResource(R.string.cd_chamar, contacto.nome)
+
+    Box(
+        modifier = modifier
+            .semantics {
+                role = Role.Button
+                if (contacto.chamable) contentDescription = descricionChamar
+                onClick { tapActual(); true }
+            }
+            .pointerInput(detectarAcceso) {
+                awaitEachGesture {
+                    awaitFirstDown()
+                    premido = true
+                    try {
+                        if (detectarAcceso) {
+                            var expirou = true
+                            val soltar = withTimeoutOrNull(TEMPO_ACCESO_ADMIN_MS) {
+                                waitForUpOrCancellation().also { expirou = false }
+                            }
+                            when {
+                                expirou -> accesoActual()
+                                soltar != null -> {
+                                    soltar.consume()
+                                    tapActual()
+                                }
+                            }
+                        } else {
+                            val soltar = waitForUpOrCancellation()
+                            if (soltar != null) {
+                                soltar.consume()
+                                tapActual()
+                            }
+                        }
+                    } finally {
+                        premido = false
+                    }
+                }
+            }
+    ) {
+        when {
+            contacto.chamable -> AparenciaBoton(
+                contacto = contacto,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer {
+                        val escala = if (premido) 0.95f else 1f
+                        scaleX = escala
+                        scaleY = escala
+                        alpha = if (atenuado) 0.35f else 1f
+                    },
+            )
+
+            mostrarPista -> Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(22.dp))
+                    .background(Color(0xFF1E1E1E))
+                    .border(2.dp, Color(0xFF555555), RoundedCornerShape(22.dp)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = stringResource(R.string.pista_acceso),
+                    color = Color(0xFF9E9E9E),
+                    fontSize = 18.sp,
+                    lineHeight = 22.sp,
+                    textAlign = TextAlign.Center,
+                )
+            }
+
+            else -> Unit // Cela baleira ou desactivada: non se ve nada.
         }
     }
 }
