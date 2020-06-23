@@ -272,6 +272,62 @@ class MainActivity : ComponentActivity() {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
+//  NAVEGACIÓN
+// ═════════════════════════════════════════════════════════════════════════════
+
+private sealed interface Pantalla {
+    data object Principal : Pantalla
+    data object Admin : Pantalla
+    data class Editor(val indice: Int) : Pantalla
+}
+
+@Composable
+fun App() {
+    val context = LocalContext.current
+    var pantalla by remember { mutableStateOf<Pantalla>(Pantalla.Principal) }
+    var slots by remember { mutableStateOf(Almacen.cargar(context)) }
+    var grella by remember { mutableStateOf(Almacen.cargarGrella(context)) }
+
+    when (val p = pantalla) {
+        Pantalla.Principal -> PantallaPrincipal(
+            slots = slots,
+            grella = grella,
+            onAccesoAdmin = { pantalla = Pantalla.Admin },
+        )
+
+        Pantalla.Admin -> PantallaAdmin(
+            slots = slots,
+            grella = grella,
+            onCambiarGrella = { nova ->
+                grella = nova
+                Almacen.gardarGrella(context, nova)
+            },
+            onEditar = { indice -> pantalla = Pantalla.Editor(indice) },
+            onSair = { pantalla = Pantalla.Principal },
+        )
+
+        is Pantalla.Editor -> PantallaEditor(
+            indice = p.indice,
+            orixinal = slots[p.indice],
+            onGardar = { novo ->
+                slots = slots.toMutableList().also { it[p.indice] = novo }
+                Almacen.gardar(context, slots)
+                Almacen.limparFotosOrfas(context, slots)
+                pantalla = Pantalla.Admin
+            },
+            onCancelar = {
+                Almacen.limparFotosOrfas(context, slots)
+                pantalla = Pantalla.Admin
+            },
+            onInactividade = {
+                Almacen.limparFotosOrfas(context, slots)
+                pantalla = Pantalla.Principal
+            },
+        )
+    }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
 //  PANTALLA PRINCIPAL (a que ve a persoa maior)
 // ═════════════════════════════════════════════════════════════════════════════
 
