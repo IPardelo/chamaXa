@@ -20,6 +20,16 @@ Unha pantalla de inicio para Android con botóns grandes de cores que chaman dir
 
 </div>
 
+<br>
+
+<div align="center">
+<table>
+<tr>
+<td align="center"><img src="assets/screenshots/grella.svg" alt="Inicio" width="230"><br><sub><b>Inicio</b> — a grella de contactos</sub></td>
+</tr>
+</table>
+</div>
+
 ## Por que
 
 Precisaba dun teléfono que a miña avoa puidese usar soa. Un smartphone normal está cheo de
