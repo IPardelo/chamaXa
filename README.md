@@ -16,7 +16,7 @@ Unha pantalla de inicio para Android con botóns grandes de cores que chaman dir
 ![Android](https://img.shields.io/badge/Android-5.0+-3DDC84?style=flat-square&logo=android&logoColor=white)
 ![Gradle](https://img.shields.io/badge/Gradle-8.11-02303A?style=flat-square&logo=gradle&logoColor=white)
 ![Internet](https://img.shields.io/badge/Internet-non%20precisa-555555?style=flat-square)
-![Version](https://img.shields.io/badge/version-0.2.0-e9b44c?style=flat-square)
+![Version](https://img.shields.io/badge/version-0.3.0-e9b44c?style=flat-square)
 
 </div>
 
@@ -40,6 +40,8 @@ nomes (e as caras) da xente da casa, e un toque para chamar.
 
 ## Funcionalidades
 
+- 📞 **Chamada cun só toque** — botóns grandes de cores que ocupan toda a pantalla; cada un chama directamente, sen pasar polo marcador
+- 🔠 **Nomes grandes** — en negriña e o máis grandes posible: o texto redúcese só o xusto para caber, sen partir palabras
 - 📴 **Sen Internet** — os contactos gárdanse só no teléfono; a app nin sequera ten permiso de Internet
 
 ## Configuración
@@ -82,6 +84,12 @@ chamaXa/
 
 ## Evolución por versión
 
+### v0.3.0
+- **Grella principal** a pantalla completa e sen barras do sistema. O botón Atrás non fai nada.
+- **Chamada directa** cun toque; se non hai permiso, ábrese o marcador.
+- Nomes en negriña que se reducen só o xusto para caber.
+- Aviso na primeira execución, cando aínda non hai contactos.
+
 ### v0.2.0
 - Modelo de contacto (nome, teléfono, cor, foto e activo) e de grella.
 - Persistencia en `SharedPreferences` con JSON, sen bibliotecas externas.
@@ -94,6 +102,8 @@ chamaXa/
 ## Folla de ruta
 
 - [ ] Configurar os contactos desde o propio móbil, sen recompilar
+- [ ] Fotos nos botóns
+- [ ] Tradución ao galego e ao castelán
 - [ ] Icona definitiva (*adaptive icon*) en `mipmap`
 
 ## Autor
