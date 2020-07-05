@@ -6,7 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -632,5 +636,25 @@ private fun chamar(context: Context, telefono: String) {
         context.startActivity(Intent(Intent.ACTION_DIAL, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     } catch (_: Exception) {
         // Sen app de teléfono: non facemos nada, pero a app non se pecha.
+    }
+}
+
+/** Vibración física adicional, máis perceptible que o feedback háptico estándar. */
+private fun vibrar(context: Context, duracionMs: Long = 200) {
+    try {
+        val vibrator: Vibrator? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            context.getSystemService(VibratorManager::class.java)?.defaultVibrator
+        } else {
+            ContextCompat.getSystemService(context, Vibrator::class.java)
+        }
+        if (vibrator == null || !vibrator.hasVibrator()) return
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(duracionMs, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            // Android 5.0 – 7.1
+            @Suppress("DEPRECATION")
+            vibrator.vibrate(duracionMs)
+        }
+    } catch (_: Exception) {
     }
 }

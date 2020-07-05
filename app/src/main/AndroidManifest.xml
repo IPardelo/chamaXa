@@ -4,6 +4,8 @@
 
     <!-- Llamada directa sin pasar por el marcador -->
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <!-- Vibración de confirmación al pulsar -->
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
