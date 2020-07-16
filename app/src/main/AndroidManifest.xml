@@ -27,6 +27,13 @@
             android:windowSoftInputMode="adjustResize"
             tools:ignore="DiscouragedApi,LockedOrientationActivity">
 
+            <!-- Pantalla de inicio (Launcher) del sistema -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
             <!-- Icono en el cajón de apps (útil para abrirla durante la configuración) -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
