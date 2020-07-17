@@ -2,6 +2,7 @@ package es.ipardelo.chamaxa
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.role.RoleManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -657,4 +658,17 @@ private fun vibrar(context: Context, duracionMs: Long = 200) {
         }
     } catch (_: Exception) {
     }
+}
+
+private fun eLauncherPredeterminado(context: Context): Boolean = try {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        context.getSystemService(RoleManager::class.java)?.isRoleHeld(RoleManager.ROLE_HOME) == true
+    } else {
+        val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
+        context.packageManager
+            .resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
+            ?.activityInfo?.packageName == context.packageName
+    }
+} catch (_: Exception) {
+    false
 }
