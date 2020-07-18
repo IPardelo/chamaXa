@@ -672,3 +672,19 @@ private fun eLauncherPredeterminado(context: Context): Boolean = try {
 } catch (_: Exception) {
     false
 }
+
+/** En Android 10+ mostra o diálogo do sistema "Usar como app de inicio?". */
+private fun intentRolInicio(context: Context): Intent? = try {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        val roleManager = context.getSystemService(RoleManager::class.java)
+        if (roleManager != null && roleManager.isRoleAvailable(RoleManager.ROLE_HOME)) {
+            roleManager.createRequestRoleIntent(RoleManager.ROLE_HOME)
+        } else {
+            null
+        }
+    } else {
+        null
+    }
+} catch (_: Exception) {
+    null
+}
