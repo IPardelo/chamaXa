@@ -7,6 +7,11 @@
     <!-- Vibración de confirmación al pulsar -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <!-- No exigir telefonía para poder instalar también en tablets de prueba -->
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
