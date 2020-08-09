@@ -55,10 +55,27 @@ nomes (e as caras) da xente da casa, e un toque para chamar.
 | **Android 5.0+** | Con tarxeta SIM para chamar (probado nun Moto E de 2ª xeración) |
 | **Android Studio** | Só para compilar e instalar a app (o JDK 17 xa vén incluído) |
 
-### ▶️ Compilar e probar
+### 📲 Instalar
+
+**Cun APK xa compilado**
+
+1. Copia `ChamaXa.apk` ao teléfono (cable USB, correo, Drive…) e ábreo desde *Arquivos*.
+2. Android avisará dunha **fonte descoñecida**: toca *Axustes* e permite instalar desde esa app.
+3. Toca **Instalar**. Se aparece *Google Play Protect*: *Máis detalles → Instalar igualmente*.
+
+**Desde o código fonte**
 
 1. En Android Studio: *File → Open* → a carpeta do proxecto (a que ten `settings.gradle.kts`).
+   A primeira sincronización descarga Gradle 8.11.1 e as dependencias.
 2. Activa a *depuración USB* no móbil, conéctao e preme **▶ Run**.
+3. Para xerar un APK para outros teléfonos: *Build → Generate Signed App Bundle / APK…* → **APK** → **release**.
+   Garda a chave `.jks` e os contrasinais: sen eles non poderás publicar actualizacións.
+
+### 🏠 Primeira posta en marcha
+
+1. Abre ChamaXa e **acepta o permiso de chamadas**. Sen el, cada botón abre o marcador e hai que tocar o botón verde.
+2. Fai que ChamaXa sexa a **pantalla de inicio**: preme Inicio → **ChamaXa** → **Sempre**.
+3. Proba unha chamada con cada botón.
 
 ## Estrutura xeral
 
