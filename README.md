@@ -16,7 +16,7 @@ Unha pantalla de inicio para Android con botóns grandes de cores que chaman dir
 ![Android](https://img.shields.io/badge/Android-5.0+-3DDC84?style=flat-square&logo=android&logoColor=white)
 ![Gradle](https://img.shields.io/badge/Gradle-8.11-02303A?style=flat-square&logo=gradle&logoColor=white)
 ![Internet](https://img.shields.io/badge/Internet-non%20precisa-555555?style=flat-square)
-![Version](https://img.shields.io/badge/version-0.4.0-e9b44c?style=flat-square)
+![Version](https://img.shields.io/badge/version-0.5.0-e9b44c?style=flat-square)
 
 </div>
 
@@ -44,6 +44,7 @@ nomes (e as caras) da xente da casa, e un toque para chamar.
 - 🔠 **Nomes grandes** — en negriña e o máis grandes posible: o texto redúcese só o xusto para caber, sen partir palabras
 - ✋ **Anti-dobre pulsación** — tras un toque, todos os botóns quedan bloqueados 3 segundos (útil se hai tremor ou nerviosismo)
 - 📳 **Vibración** — cada pulsación nótase na man, non só se ve
+- 🏠 **Pantalla de inicio** — substitúe o escritorio do teléfono: sen barras, o botón Atrás non fai nada e Inicio sempre volve aquí
 - 📴 **Sen Internet** — os contactos gárdanse só no teléfono; a app nin sequera ten permiso de Internet
 
 ## Configuración
@@ -102,6 +103,11 @@ chamaXa/
 ```
 
 ## Evolución por versión
+
+### v0.5.0
+- ChamaXa xa pode ser a **pantalla de inicio** do teléfono.
+- En Android 10+ ofrécese o diálogo do sistema *Usar como app de inicio*.
+- Instalable tamén en tablets sen telefonía, para probala.
 
 ### v0.4.0
 - **Anti-dobre pulsación**: tras un toque, os botóns bloquéanse 3 segundos e os demais vense atenuados.
