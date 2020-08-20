@@ -101,6 +101,9 @@ private val TAMANO_TEXTO_MIN = 14.sp
 /** Bloqueo tras unha pulsación, para evitar chamadas duplicadas. */
 private const val BLOQUEO_CHAMADA_MS = 3_000L
 
+/** Tempo que hai que manter premida a esquina superior esquerda para entrar na configuración. */
+private const val TEMPO_ACCESO_ADMIN_MS = 10_000L
+
 /** Grella: entre 1 e 4 columnas e entre 1 e 4 filas (máximo 4 × 4 = 16 contactos). */
 private const val MAX_COLUMNAS = 4
 private const val MAX_FILAS = 4
