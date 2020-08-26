@@ -15,6 +15,7 @@ import android.os.VibratorManager
 import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -38,10 +39,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
@@ -81,6 +85,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONArray
@@ -603,6 +610,160 @@ fun TextoAxustado(
             }
         },
     )
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+//  PANTALLA DE ADMINISTRACIÓN
+// ═════════════════════════════════════════════════════════════════════════════
+
+@Composable
+fun PantallaAdmin(
+    slots: List<Contacto>,
+    grella: Grella,
+    onCambiarGrella: (Grella) -> Unit,
+    onEditar: (Int) -> Unit,
+    onSair: () -> Unit,
+) {
+    BackHandler { onSair() }
+
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val inactividade = rememberInactividade(INACTIVIDADE_ADMIN_MS, onExpirar = onSair)
+
+    var permisoChamada by remember { mutableStateOf(tenPermisoChamada(context)) }
+    var eLauncher by remember { mutableStateOf(eLauncherPredeterminado(context)) }
+
+    // Actualiza os estados ao volver dos axustes do sistema.
+    LaunchedEffect(Unit) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            permisoChamada = tenPermisoChamada(context)
+            eLauncher = eLauncherPredeterminado(context)
+        }
+    }
+
+    val pedirPermiso = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { concedido ->
+        permisoChamada = concedido
+        // Se xa se denegou antes, Android non volve preguntar: abrimos os axustes da app.
+        if (!concedido) abrirAxustesApp(context)
+    }
+
+    val pedirRolInicio = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { eLauncher = eLauncherPredeterminado(context) }
+
+    Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .then(inactividade)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+        ) {
+            Text(stringResource(R.string.admin_titulo), fontSize = 30.sp, fontWeight = FontWeight.Bold)
+            Text(
+                text = stringResource(R.string.admin_axuda),
+                fontSize = 16.sp,
+                color = Color.LightGray,
+            )
+            Spacer(Modifier.height(16.dp))
+
+            // Selector do tamaño da grella
+            Text(
+                text = stringResource(R.string.tamano_grella) + ": ${grella.columnas} × ${grella.filas}",
+                fontSize = 18.sp,
+            )
+            Spacer(Modifier.height(8.dp))
+            SelectorNumero(
+                titulo = stringResource(R.string.columnas),
+                valor = grella.columnas,
+                onCambio = { onCambiarGrella(grella.copy(columnas = it)) },
+            )
+            SelectorNumero(
+                titulo = stringResource(R.string.filas),
+                valor = grella.filas,
+                onCambio = { onCambiarGrella(grella.copy(filas = it)) },
+            )
+            Text(
+                text = stringResource(R.string.tamano_grella_axuda, grella.celas),
+                fontSize = 14.sp,
+                color = Color.Gray,
+                modifier = Modifier.padding(top = 6.dp),
+            )
+            Spacer(Modifier.height(16.dp))
+
+            // Proporción aproximada das celas reais (pantalla vertical ≈ 9:16).
+            val proporcion = (grella.filas.toFloat() / grella.columnas * 0.56f).coerceIn(0.45f, 2.2f)
+            for (fila in 0 until grella.filas) {
+                Row(Modifier.fillMaxWidth()) {
+                    for (columna in 0 until grella.columnas) {
+                        val indice = fila * grella.columnas + columna
+                        MiniaturaSlot(
+                            indice = indice,
+                            contacto = slots[indice],
+                            onClick = { onEditar(indice) },
+                            modifier = Modifier
+                                .weight(1f)
+                                .aspectRatio(proporcion)
+                                .padding(4.dp),
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            FilaEstado(
+                titulo = stringResource(R.string.estado_chamadas),
+                ok = permisoChamada,
+                textoBoton = if (permisoChamada) null else stringResource(R.string.conceder),
+                onClick = {
+                    try {
+                        pedirPermiso.launch(Manifest.permission.CALL_PHONE)
+                    } catch (_: Exception) {
+                        abrirAxustesApp(context)
+                    }
+                },
+            )
+            FilaEstado(
+                titulo = stringResource(R.string.estado_launcher),
+                ok = eLauncher,
+                // Sempre visible: se ChamaXa xa é o launcher, permite escoller outro.
+                textoBoton = stringResource(if (eLauncher) R.string.cambiar else R.string.configurar),
+                onClick = {
+                    // Se xa temos o rol, o diálogo do sistema non aparecería: abrimos os axustes.
+                    val intent = if (eLauncher) null else intentRolInicio(context)
+                    if (intent != null) {
+                        try {
+                            pedirRolInicio.launch(intent)
+                        } catch (_: Exception) {
+                            abrirAxustesInicio(context)
+                        }
+                    } else {
+                        abrirAxustesInicio(context)
+                    }
+                },
+            )
+
+            Spacer(Modifier.height(8.dp))
+
+            // Acceso aos axustes do sistema (cambiar launcher, desinstalar, wifi…)
+            OutlinedButton(
+                onClick = { abrirAxustesSistema(context) },
+                modifier = Modifier.fillMaxWidth(),
+            ) { Text(stringResource(R.string.abrir_axustes)) }
+
+            Spacer(Modifier.height(24.dp))
+
+            Button(
+                onClick = onSair,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(64.dp),
+            ) { Text(stringResource(R.string.sair_config), fontSize = 20.sp) }
+        }
+    }
 }
 
 // ═════════════════════════════════════════════════════════════════════════════

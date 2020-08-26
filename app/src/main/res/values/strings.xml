@@ -6,4 +6,17 @@
     <string name="aviso_sen_contactos">Press and hold the top-left corner for 10 seconds to set up the contacts</string>
     <string name="cd_chamar">Call %1$s</string>
     <string name="pista_acceso">⚙\nHold\n10 s</string>
+    <string name="admin_titulo">Settings</string>
+    <string name="admin_axuda">Tap a button to edit it. Changes are saved instantly.</string>
+    <string name="estado_chamadas">Direct calls</string>
+    <string name="conceder">Grant</string>
+    <string name="estado_launcher">Default home screen</string>
+    <string name="configurar">Set up</string>
+    <string name="abrir_axustes">⚙  Open phone settings</string>
+    <string name="sair_config">EXIT SETTINGS</string>
+    <string name="tamano_grella">Grid size</string>
+    <string name="tamano_grella_axuda">%1$d buttons will be shown. Contacts in hidden positions are kept.</string>
+    <string name="cambiar">Change</string>
+    <string name="columnas">Columns</string>
+    <string name="filas">Rows</string>
 </resources>
