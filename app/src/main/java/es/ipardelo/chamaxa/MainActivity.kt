@@ -21,6 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
@@ -762,6 +763,54 @@ fun PantallaAdmin(
                     .fillMaxWidth()
                     .height(64.dp),
             ) { Text(stringResource(R.string.sair_config), fontSize = 20.sp) }
+        }
+    }
+}
+
+@Composable
+fun MiniaturaSlot(
+    indice: Int,
+    contacto: Contacto,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val forma = RoundedCornerShape(20.dp)
+    Box(
+        modifier = modifier
+            .clip(forma)
+            .clickable(onClick = onClick)
+    ) {
+        if (contacto.chamable) {
+            AparenciaBoton(contacto, Modifier.fillMaxSize(), tamanoTexto = 18.sp)
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFF2A2A2A))
+                    .border(2.dp, Color.Gray, forma),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = if (!contacto.activo && !contacto.baleiro)
+                        stringResource(R.string.slot_desactivado, contacto.nome.ifBlank { "—" })
+                    else stringResource(R.string.slot_baleiro),
+                    color = Color.LightGray,
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
+        // Número de posición
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(6.dp)
+                .size(26.dp)
+                .clip(CircleShape)
+                .background(Color.Black.copy(alpha = 0.6f)),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text("${indice + 1}", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
         }
     }
 }

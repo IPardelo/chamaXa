@@ -14,6 +14,8 @@
     <string name="configurar">Set up</string>
     <string name="abrir_axustes">⚙  Open phone settings</string>
     <string name="sair_config">EXIT SETTINGS</string>
+    <string name="slot_desactivado">%1$s\n(disabled)</string>
+    <string name="slot_baleiro">Empty\n＋</string>
     <string name="tamano_grella">Grid size</string>
     <string name="tamano_grella_axuda">%1$d buttons will be shown. Contacts in hidden positions are kept.</string>
     <string name="cambiar">Change</string>
