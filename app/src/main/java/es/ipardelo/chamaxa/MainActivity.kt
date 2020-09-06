@@ -39,6 +39,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -811,6 +812,29 @@ fun MiniaturaSlot(
             contentAlignment = Alignment.Center,
         ) {
             Text("${indice + 1}", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        }
+    }
+}
+
+/** Fila "Título: [1] [2] [3] [4]" co valor actual resaltado. */
+@Composable
+private fun SelectorNumero(titulo: String, valor: Int, onCambio: (Int) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(titulo, fontSize = 16.sp, modifier = Modifier.width(90.dp))
+        OPCIONS_GRELLA.forEach { opcion ->
+            if (opcion == valor) {
+                Button(onClick = {}, modifier = Modifier.weight(1f)) { Text("$opcion") }
+            } else {
+                OutlinedButton(onClick = { onCambio(opcion) }, modifier = Modifier.weight(1f)) {
+                    Text("$opcion")
+                }
+            }
         }
     }
 }
