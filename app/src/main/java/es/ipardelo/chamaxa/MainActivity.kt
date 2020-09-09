@@ -839,6 +839,25 @@ private fun SelectorNumero(titulo: String, valor: Int, onCambio: (Int) -> Unit) 
     }
 }
 
+@Composable
+private fun FilaEstado(titulo: String, ok: Boolean, textoBoton: String?, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = (if (ok) "✅  " else "⚠️  ") + titulo,
+            fontSize = 17.sp,
+            modifier = Modifier.weight(1f),
+        )
+        if (textoBoton != null) {
+            OutlinedButton(onClick = onClick) { Text(textoBoton) }
+        }
+    }
+}
+
 // ═════════════════════════════════════════════════════════════════════════════
 //  UTILIDADES DE UI
 // ═════════════════════════════════════════════════════════════════════════════
