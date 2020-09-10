@@ -956,3 +956,20 @@ private fun abrirAxustesInicio(context: Context) {
         }
     }
 }
+
+private fun abrirAxustesSistema(context: Context) {
+    try {
+        context.startActivity(Intent(Settings.ACTION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+    } catch (_: Exception) {
+    }
+}
+
+private fun abrirAxustesApp(context: Context) {
+    try {
+        context.startActivity(
+            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", context.packageName, null))
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
+    } catch (_: Exception) {
+    }
+}
