@@ -54,6 +54,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -67,6 +68,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -112,6 +114,9 @@ private const val BLOQUEO_CHAMADA_MS = 3_000L
 
 /** Tempo que hai que manter premida a esquina superior esquerda para entrar na configuración. */
 private const val TEMPO_ACCESO_ADMIN_MS = 10_000L
+
+/** Se ninguén toca a configuración durante este tempo, volve á grella. */
+private const val INACTIVIDADE_ADMIN_MS = 180_000L
 
 /** Grella: entre 1 e 4 columnas e entre 1 e 4 filas (máximo 4 × 4 = 16 contactos). */
 private const val MAX_COLUMNAS = 4
@@ -865,6 +870,38 @@ private fun FilaEstado(titulo: String, ok: Boolean, textoBoton: String?, onClick
 /** Texto negro sobre fondos claros (p. ex. amarelo) e branco sobre escuros. */
 private fun corTexto(fondo: Color): Color =
     if (fondo.luminance() > 0.5f) Color.Black else Color.White
+
+/**
+ * Devolve un Modifier que detecta toques. Se non hai toques (nin cambios nas [claves])
+ * durante [timeoutMs] mentres a app está en primeiro plano, chama a [onExpirar].
+ * O contador páusase mentres está aberto un selector (galería, axenda, axustes).
+ */
+@Composable
+fun rememberInactividade(
+    timeoutMs: Long,
+    vararg claves: Any?,
+    onExpirar: () -> Unit,
+): Modifier {
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val expirar by rememberUpdatedState(onExpirar)
+    var toques by remember { mutableIntStateOf(0) }
+
+    LaunchedEffect(toques, *claves) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            delay(timeoutMs)
+            expirar()
+        }
+    }
+
+    return Modifier.pointerInput(Unit) {
+        awaitPointerEventScope {
+            while (true) {
+                awaitPointerEvent(PointerEventPass.Initial)
+                toques++
+            }
+        }
+    }
+}
 
 // ═════════════════════════════════════════════════════════════════════════════
 //  SISTEMA: chamadas, vibración, axenda, fotos, launcher
