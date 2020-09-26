@@ -26,6 +26,7 @@ Unha pantalla de inicio para Android con botóns grandes de cores que chaman dir
 <table>
 <tr>
 <td align="center"><img src="assets/screenshots/grella.svg" alt="Inicio" width="230"><br><sub><b>Inicio</b> — a grella de contactos</sub></td>
+<td align="center"><img src="assets/screenshots/configuracion.svg" alt="Configuración" width="230"><br><sub><b>Configuración</b> — o menú oculto</sub></td>
 </tr>
 </table>
 </div>
