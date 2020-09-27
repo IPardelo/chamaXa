@@ -16,7 +16,7 @@ Unha pantalla de inicio para Android con botóns grandes de cores que chaman dir
 ![Android](https://img.shields.io/badge/Android-5.0+-3DDC84?style=flat-square&logo=android&logoColor=white)
 ![Gradle](https://img.shields.io/badge/Gradle-8.11-02303A?style=flat-square&logo=gradle&logoColor=white)
 ![Internet](https://img.shields.io/badge/Internet-non%20precisa-555555?style=flat-square)
-![Version](https://img.shields.io/badge/version-0.5.0-e9b44c?style=flat-square)
+![Version](https://img.shields.io/badge/version-0.6.0-e9b44c?style=flat-square)
 
 </div>
 
@@ -46,6 +46,8 @@ nomes (e as caras) da xente da casa, e un toque para chamar.
 - ✋ **Anti-dobre pulsación** — tras un toque, todos os botóns quedan bloqueados 3 segundos (útil se hai tremor ou nerviosismo)
 - 📳 **Vibración** — cada pulsación nótase na man, non só se ve
 - 🏠 **Pantalla de inicio** — substitúe o escritorio do teléfono: sen barras, o botón Atrás non fai nada e Inicio sempre volve aquí
+- 🔒 **Menú oculto** — mantendo premido 10 segundos o botón superior esquerdo. Se ninguén o toca en 3 minutos, volve só á grella
+- 🔢 **Grella a medida** — de 1 a 4 columnas e de 1 a 4 filas: 4 × 4 para 16 contactos, ou 2 × 3 para botóns enormes
 - 📴 **Sen Internet** — os contactos gárdanse só no teléfono; a app nin sequera ten permiso de Internet
 
 ## Configuración
@@ -76,8 +78,34 @@ nomes (e as caras) da xente da casa, e un toque para chamar.
 ### 🏠 Primeira posta en marcha
 
 1. Abre ChamaXa e **acepta o permiso de chamadas**. Sen el, cada botón abre o marcador e hai que tocar o botón verde.
-2. Fai que ChamaXa sexa a **pantalla de inicio**: preme Inicio → **ChamaXa** → **Sempre**.
-3. Proba unha chamada con cada botón.
+2. Configura os contactos (mira o apartado seguinte).
+3. Fai que ChamaXa sexa a **pantalla de inicio**: botón *Configurar* no menú, ou preme Inicio → **ChamaXa** → **Sempre**.
+4. Proba unha chamada con cada botón.
+
+### 📇 Configurar os contactos
+
+Mantén o dedo sobre o **botón superior esquerdo durante 10 segundos** sen soltar: o teléfono
+vibra e ábrese o menú de configuración. Un toque curto nese botón segue chamando como sempre.
+
+No mesmo menú:
+
+- **Tamaño da grella** — columnas (1–4) e filas (1–4). Os contactos que quedan fóra non se borran.
+- **Chamadas directas** e **Pantalla de inicio predeterminada** — ✅ ou ⚠️, cun botón para arranxalo.
+- **⚙ Abrir axustes do teléfono** — wifi, volume, desinstalar…
+- Se ninguén toca o menú en **3 minutos**, volve á grella e descarta o que non se gardou.
+
+### ⚙️ Parámetros axustables
+
+Ao comezo de `MainActivity.kt`:
+
+| Constante | Por defecto | Descrición |
+|---|---|---|
+| `TAMANO_TEXTO` / `TAMANO_TEXTO_MIN` | `32.sp` / `14.sp` | Tamaño máximo e mínimo do nome |
+| `MAX_COLUMNAS` / `MAX_FILAS` | `4` / `4` | Tamaño máximo da grella |
+| `BLOQUEO_CHAMADA_MS` | `3000` | Bloqueo anti-dobre pulsación |
+| `TEMPO_ACCESO_ADMIN_MS` | `10000` | Tempo para entrar no menú |
+| `INACTIVIDADE_ADMIN_MS` | `180000` | Inactividade antes de saír do menú |
+| `PALETA` | 8 cores | Cores dispoñibles para os botóns |
 
 ## Estrutura xeral
 
@@ -105,6 +133,12 @@ chamaXa/
 
 ## Evolución por versión
 
+### v0.6.0
+- **Menú de configuración oculto**: manter premida 10 segundos a primeira cela. Un toque curto segue chamando.
+- **Tamaño da grella**: de 1 a 4 columnas e de 1 a 4 filas. Os contactos que quedan fóra non se borran.
+- Estado do permiso de chamadas e do launcher, cun botón para arranxar cada un.
+- Se ninguén toca o menú en 3 minutos, volve á grella e descarta os cambios.
+
 ### v0.5.0
 - ChamaXa xa pode ser a **pantalla de inicio** do teléfono.
 - En Android 10+ ofrécese o diálogo do sistema *Usar como app de inicio*.
@@ -131,9 +165,9 @@ chamaXa/
 
 ## Folla de ruta
 
-- [ ] Configurar os contactos desde o propio móbil, sen recompilar
 - [ ] Fotos nos botóns
 - [ ] Tradución ao galego e ao castelán
+- [ ] Importar os números da axenda
 - [ ] Icona definitiva (*adaptive icon*) en `mipmap`
 
 ## Autor
