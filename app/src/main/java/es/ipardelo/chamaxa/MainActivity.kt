@@ -17,6 +17,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,6 +38,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -44,12 +46,16 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -57,6 +63,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -80,6 +87,9 @@ import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
@@ -859,6 +869,246 @@ private fun FilaEstado(titulo: String, ok: Boolean, textoBoton: String?, onClick
         )
         if (textoBoton != null) {
             OutlinedButton(onClick = onClick) { Text(textoBoton) }
+        }
+    }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+//  EDITOR DUN BOTÓN
+// ═════════════════════════════════════════════════════════════════════════════
+
+@Composable
+fun PantallaEditor(
+    indice: Int,
+    orixinal: Contacto,
+    onGardar: (Contacto) -> Unit,
+    onCancelar: () -> Unit,
+    onInactividade: () -> Unit,
+) {
+    BackHandler { onCancelar() }
+
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    var borrador by remember(indice) { mutableStateOf(orixinal) }
+    var erro by remember { mutableStateOf<Int?>(null) } // id de R.string
+    var cargandoFoto by remember { mutableStateOf(false) }
+
+    val inactividade = rememberInactividade(INACTIVIDADE_ADMIN_MS, borrador, onExpirar = onInactividade)
+
+    // Galería: copiamos a imaxe a filesDir para que non desapareza ao reiniciar.
+    val selectorFoto = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        if (uri != null) {
+            cargandoFoto = true
+            scope.launch {
+                val ruta = copiarFoto(context, uri, indice)
+                cargandoFoto = false
+                if (ruta != null) borrador = borrador.copy(foto = ruta)
+                else erro = R.string.erro_imaxe
+            }
+        }
+    }
+
+    // Axenda: selector de NÚMERO (non de contacto) → non require permiso READ_CONTACTS.
+    val selectorTelefono = rememberLauncherForActivityResult(SelectorTelefono()) { uri ->
+        if (uri != null) {
+            val resultado = lerTelefono(context, uri)
+            if (resultado != null) {
+                val (numero, nomeAxenda) = resultado
+                borrador = borrador.copy(
+                    telefono = limparTelefono(numero),
+                    nome = borrador.nome.ifBlank { nomeAxenda.uppercase().take(MAX_NOME) },
+                )
+                erro = null
+            } else {
+                erro = R.string.erro_ler_numero
+            }
+        }
+    }
+
+    Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .then(inactividade)
+                .imePadding()
+                .verticalScroll(rememberScrollState())
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            Text(stringResource(R.string.editor_titulo, indice + 1), fontSize = 28.sp, fontWeight = FontWeight.Bold)
+
+            // Vista previa
+            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                if (borrador.nome.isNotBlank() || borrador.foto != null) {
+                    AparenciaBoton(
+                        contacto = borrador,
+                        modifier = Modifier
+                            .width(150.dp)
+                            .height(190.dp)
+                            .graphicsLayer { alpha = if (borrador.activo) 1f else 0.35f },
+                        tamanoTexto = 26.sp,
+                    )
+                } else {
+                    Text(stringResource(R.string.sen_vista_previa), color = Color.Gray)
+                }
+            }
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(stringResource(R.string.boton_activo), fontSize = 18.sp, modifier = Modifier.weight(1f))
+                Switch(
+                    checked = borrador.activo,
+                    onCheckedChange = { borrador = borrador.copy(activo = it) },
+                )
+            }
+            Text(
+                text = stringResource(R.string.boton_activo_axuda),
+                fontSize = 14.sp,
+                color = Color.Gray,
+            )
+
+            OutlinedTextField(
+                value = borrador.nome,
+                onValueChange = {
+                    borrador = borrador.copy(nome = it.take(MAX_NOME))
+                    erro = null
+                },
+                label = { Text(stringResource(R.string.campo_nome)) },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Characters,
+                    imeAction = ImeAction.Next,
+                ),
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            OutlinedTextField(
+                value = borrador.telefono,
+                onValueChange = {
+                    borrador = borrador.copy(telefono = limparTelefono(it))
+                    erro = null
+                },
+                label = { Text(stringResource(R.string.campo_telefono)) },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Phone,
+                    imeAction = ImeAction.Done,
+                ),
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            OutlinedButton(
+                onClick = {
+                    try {
+                        selectorTelefono.launch(Unit)
+                    } catch (_: Exception) {
+                        erro = R.string.erro_sen_axenda
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+            ) { Text(stringResource(R.string.importar_axenda)) }
+
+            Text(stringResource(R.string.cor_boton), fontSize = 18.sp)
+            PALETA.chunked(4).forEach { filaCores ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                ) {
+                    filaCores.forEach { cor ->
+                        val seleccionada = borrador.cor == cor.toArgb()
+                        Box(
+                            modifier = Modifier
+                                .size(56.dp)
+                                .clip(CircleShape)
+                                .background(cor)
+                                .border(
+                                    width = if (seleccionada) 4.dp else 1.dp,
+                                    color = if (seleccionada) Color.White else Color.DarkGray,
+                                    shape = CircleShape,
+                                )
+                                .clickable { borrador = borrador.copy(cor = cor.toArgb()) },
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            if (seleccionada) {
+                                Text("✓", color = corTexto(cor), fontSize = 26.sp, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+                }
+            }
+
+            Text(stringResource(R.string.foto_opcional), fontSize = 18.sp)
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedButton(
+                    onClick = {
+                        try {
+                            selectorFoto.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        } catch (_: Exception) {
+                            erro = R.string.erro_sen_galeria
+                        }
+                    },
+                    enabled = !cargandoFoto,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(
+                        when {
+                            cargandoFoto -> stringResource(R.string.cargando)
+                            borrador.foto == null -> stringResource(R.string.escoller_foto)
+                            else -> stringResource(R.string.cambiar_foto)
+                        }
+                    )
+                }
+                if (borrador.foto != null) {
+                    OutlinedButton(
+                        onClick = { borrador = borrador.copy(foto = null) },
+                        modifier = Modifier.weight(1f),
+                    ) { Text(stringResource(R.string.quitar_foto)) }
+                }
+            }
+
+            erro?.let {
+                Text(stringResource(it), color = MaterialTheme.colorScheme.error, fontSize = 16.sp)
+            }
+
+            Button(
+                onClick = {
+                    val problema = validar(borrador)
+                    if (problema != null) {
+                        erro = problema
+                    } else {
+                        onGardar(
+                            borrador.copy(
+                                nome = borrador.nome.trim(),
+                                telefono = borrador.telefono.trim(),
+                            )
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp),
+            ) { Text(stringResource(R.string.gardar), fontSize = 20.sp) }
+
+            OutlinedButton(
+                onClick = onCancelar,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+            ) { Text(stringResource(R.string.cancelar), fontSize = 18.sp) }
+
+            TextButton(
+                onClick = {
+                    borrador = contactoBaleiro(indice)
+                    erro = null
+                },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(stringResource(R.string.baleirar_boton), color = MaterialTheme.colorScheme.error)
+            }
         }
     }
 }
