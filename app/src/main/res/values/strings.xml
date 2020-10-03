@@ -36,6 +36,8 @@
     <string name="erro_ler_numero">Couldn\'t read the number</string>
     <string name="erro_sen_axenda">No contacts app found</string>
     <string name="erro_sen_galeria">No gallery app found</string>
+    <string name="erro_nome">Enter a name</string>
+    <string name="erro_telefono">Enter a valid phone number</string>
     <string name="tamano_grella">Grid size</string>
     <string name="tamano_grella_axuda">%1$d buttons will be shown. Contacts in hidden positions are kept.</string>
     <string name="cambiar">Change</string>

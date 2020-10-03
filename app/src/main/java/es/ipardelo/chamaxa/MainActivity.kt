@@ -19,6 +19,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -1112,6 +1113,17 @@ fun PantallaEditor(
         }
     }
 }
+
+@StringRes
+private fun validar(c: Contacto): Int? = when {
+    c.baleiro || !c.activo -> null
+    c.nome.isBlank() -> R.string.erro_nome
+    c.telefono.count { it.isDigit() } < 3 -> R.string.erro_telefono
+    else -> null
+}
+
+private fun limparTelefono(texto: String): String =
+    texto.filter { it.isDigit() || it == '+' || it == ' ' }.take(25)
 
 // ═════════════════════════════════════════════════════════════════════════════
 //  UTILIDADES DE UI
