@@ -2,6 +2,7 @@ package es.ipardelo.chamaxa
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.role.RoleManager
 import android.content.Context
 import android.content.Intent
@@ -12,12 +13,14 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.provider.ContactsContract
 import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -1214,6 +1217,34 @@ private fun vibrar(context: Context, duracionMs: Long = 200) {
         }
     } catch (_: Exception) {
     }
+}
+
+/**
+ * Abre a axenda para escoller UN NÚMERO concreto. O sistema concede acceso temporal
+ * só a esa fila, así que non fai falla o permiso READ_CONTACTS.
+ */
+class SelectorTelefono : ActivityResultContract<Unit, Uri?>() {
+    override fun createIntent(context: Context, input: Unit): Intent =
+        Intent(Intent.ACTION_PICK).setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE)
+
+    override fun parseResult(resultCode: Int, intent: Intent?): Uri? =
+        if (resultCode == Activity.RESULT_OK) intent?.data else null
+}
+
+/** Devolve (número, nome) da fila escollida na axenda. */
+private fun lerTelefono(context: Context, uri: Uri): Pair<String, String>? = try {
+    context.contentResolver.query(
+        uri,
+        arrayOf(
+            ContactsContract.CommonDataKinds.Phone.NUMBER,
+            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+        ),
+        null, null, null,
+    )?.use { cursor ->
+        if (cursor.moveToFirst()) Pair(cursor.getString(0) ?: "", cursor.getString(1) ?: "") else null
+    }
+} catch (_: Exception) {
+    null
 }
 
 private fun eLauncherPredeterminado(context: Context): Boolean = try {
