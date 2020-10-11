@@ -16,7 +16,7 @@ Unha pantalla de inicio para Android con botóns grandes de cores que chaman dir
 ![Android](https://img.shields.io/badge/Android-5.0+-3DDC84?style=flat-square&logo=android&logoColor=white)
 ![Gradle](https://img.shields.io/badge/Gradle-8.11-02303A?style=flat-square&logo=gradle&logoColor=white)
 ![Internet](https://img.shields.io/badge/Internet-non%20precisa-555555?style=flat-square)
-![Version](https://img.shields.io/badge/version-0.6.0-e9b44c?style=flat-square)
+![Version](https://img.shields.io/badge/version-0.7.0-e9b44c?style=flat-square)
 
 </div>
 
@@ -49,6 +49,8 @@ nomes (e as caras) da xente da casa, e un toque para chamar.
 - 🏠 **Pantalla de inicio** — substitúe o escritorio do teléfono: sen barras, o botón Atrás non fai nada e Inicio sempre volve aquí
 - 🔒 **Menú oculto** — mantendo premido 10 segundos o botón superior esquerdo. Se ninguén o toca en 3 minutos, volve só á grella
 - 🔢 **Grella a medida** — de 1 a 4 columnas e de 1 a 4 filas: 4 × 4 para 16 contactos, ou 2 × 3 para botóns enormes
+- ✏️ **Editor de botóns** — nome, teléfono, cor (8 de alto contraste) e activar ou desactivar cada botón desde o propio móbil
+- 📇 **Importar da axenda** — escolles un contacto e enche o número (e o nome, se estaba baleiro)
 - 📴 **Sen Internet** — os contactos gárdanse só no teléfono; a app nin sequera ten permiso de Internet
 
 ## Configuración
@@ -87,6 +89,17 @@ nomes (e as caras) da xente da casa, e un toque para chamar.
 
 Mantén o dedo sobre o **botón superior esquerdo durante 10 segundos** sen soltar: o teléfono
 vibra e ábrese o menú de configuración. Un toque curto nese botón segue chamando como sempre.
+
+Toca un botón para editalo e preme **GARDAR**:
+
+| Campo | Que fai |
+|---|---|
+| **Botón activo** | Se o desactivas, a cela queda baleira e non chama a ninguén |
+| **Nome** | O texto do botón (ata 20 caracteres). Os nomes curtos len mellor: *MAMÁ*, *XOÁN*, *MÉDICO* |
+| **Teléfono** | Admite espazos e prefixo (`+34 600 123 456`). Tamén vale un fixo |
+| **📇 Importar da axenda** | Escolles un número da axenda; se o nome estaba baleiro, tamén o enche |
+| **Cor do botón** | 8 cores de alto contraste. Sobre fondos claros o texto pasa a negro só |
+| **Baleirar este botón** | Borra todos os datos do botón (hai que premer **GARDAR**) |
 
 No mesmo menú:
 
@@ -134,6 +147,11 @@ chamaXa/
 
 ## Evolución por versión
 
+### v0.7.0
+- **Editor de cada botón**: nome (ata 20 caracteres), teléfono, cor e botón activo/desactivado.
+- **Importar da axenda**: Android só lle pasa á app o número escollido, sen permiso de contactos.
+- Validación do nome e do teléfono antes de gardar.
+
 ### v0.6.0
 - **Menú de configuración oculto**: manter premida 10 segundos a primeira cela. Un toque curto segue chamando.
 - **Tamaño da grella**: de 1 a 4 columnas e de 1 a 4 filas. Os contactos que quedan fóra non se borran.
@@ -168,7 +186,6 @@ chamaXa/
 
 - [ ] Fotos nos botóns
 - [ ] Tradución ao galego e ao castelán
-- [ ] Importar os números da axenda
 - [ ] Icona definitiva (*adaptive icon*) en `mipmap`
 
 ## Autor
