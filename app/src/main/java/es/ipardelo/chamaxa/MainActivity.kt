@@ -7,6 +7,9 @@ import android.app.role.RoleManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -100,17 +103,21 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.exifinterface.media.ExifInterface
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
+import java.io.FileOutputStream
 
 // ═════════════════════════════════════════════════════════════════════════════
 //  AXUSTES XERAIS (os contactos xa NON se configuran aquí, senón desde o móbil)
@@ -1246,6 +1253,63 @@ private fun lerTelefono(context: Context, uri: Uri): Pair<String, String>? = try
 } catch (_: Exception) {
     null
 }
+
+/**
+ * Copia a imaxe escollida a filesDir/fotos: recortada en cadrado, reducida a 512 px,
+ * rotada segundo o EXIF e gardada en JPEG. Así non depende de permisos de URI
+ * que se perden ao reiniciar e ocupa moi pouco.
+ */
+private suspend fun copiarFoto(context: Context, uri: Uri, indice: Int): String? =
+    withContext(Dispatchers.IO) {
+        try {
+            val resolver = context.contentResolver
+
+            val limites = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            resolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, limites) }
+            val ancho = limites.outWidth
+            val alto = limites.outHeight
+            if (ancho <= 0 || alto <= 0) return@withContext null
+
+            var mostraxe = 1
+            while (minOf(ancho, alto) / (mostraxe * 2) >= LADO_FOTO_PX) mostraxe *= 2
+
+            val orixinal = resolver.openInputStream(uri)?.use {
+                BitmapFactory.decodeStream(it, null, BitmapFactory.Options().apply { inSampleSize = mostraxe })
+            } ?: return@withContext null
+
+            val rotacion = try {
+                resolver.openInputStream(uri)?.use { ExifInterface(it).rotationDegrees } ?: 0
+            } catch (_: Exception) {
+                0
+            }
+
+            val lado = minOf(orixinal.width, orixinal.height)
+            val escala = LADO_FOTO_PX.toFloat() / lado
+            val matriz = Matrix().apply {
+                if (escala < 1f) postScale(escala, escala)
+                postRotate(rotacion.toFloat())
+            }
+            val cadrada = Bitmap.createBitmap(
+                orixinal,
+                (orixinal.width - lado) / 2,
+                (orixinal.height - lado) / 2,
+                lado,
+                lado,
+                matriz,
+                true,
+            )
+
+            val ficheiro = File(
+                Almacen.directorioFotos(context),
+                "slot_${indice + 1}_${System.currentTimeMillis()}.jpg",
+            )
+            FileOutputStream(ficheiro).use { cadrada.compress(Bitmap.CompressFormat.JPEG, 90, it) }
+            ficheiro.absolutePath
+        } catch (_: Throwable) {
+            null
+        }
+    }
+
 
 private fun eLauncherPredeterminado(context: Context): Boolean = try {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
