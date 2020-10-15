@@ -69,6 +69,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
@@ -78,6 +79,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
@@ -1142,6 +1145,21 @@ private fun limparTelefono(texto: String): String =
 /** Texto negro sobre fondos claros (p. ex. amarelo) e branco sobre escuros. */
 private fun corTexto(fondo: Color): Color =
     if (fondo.luminance() > 0.5f) Color.Black else Color.White
+
+/** Carga unha foto de filesDir en segundo plano. */
+@Composable
+fun rememberFoto(ruta: String?): ImageBitmap? {
+    val estado = produceState<ImageBitmap?>(initialValue = null, ruta) {
+        value = if (ruta == null) null else withContext(Dispatchers.IO) {
+            try {
+                BitmapFactory.decodeFile(ruta)?.asImageBitmap()
+            } catch (_: Throwable) {
+                null
+            }
+        }
+    }
+    return estado.value
+}
 
 /**
  * Devolve un Modifier que detecta toques. Se non hai toques (nin cambios nas [claves])
