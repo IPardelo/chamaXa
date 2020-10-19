@@ -108,6 +108,18 @@ No mesmo menú:
 - **⚙ Abrir axustes do teléfono** — wifi, volume, desinstalar…
 - Se ninguén toca o menú en **3 minutos**, volve á grella e descarta o que non se gardou.
 
+### 🔐 Privacidade e permisos
+
+ChamaXa **non ten permiso de Internet**: non envía nada a ningures.
+
+| Permiso | Para que |
+|---|---|
+| `CALL_PHONE` | Facer a chamada cun só toque |
+| `VIBRATE` | Vibrar ao premer un botón |
+
+Non pide acceso á axenda nin á galería: usa os selectores do sistema e só recibe o que escolles.
+Os contactos gárdanse en `SharedPreferences` e as fotos en `files/fotos/`; bórrase todo ao desinstalar.
+
 ### ⚙️ Parámetros axustables
 
 Ao comezo de `MainActivity.kt`:
