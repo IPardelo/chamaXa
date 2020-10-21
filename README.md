@@ -16,7 +16,7 @@ Unha pantalla de inicio para Android con botóns grandes de cores que chaman dir
 ![Android](https://img.shields.io/badge/Android-5.0+-3DDC84?style=flat-square&logo=android&logoColor=white)
 ![Gradle](https://img.shields.io/badge/Gradle-8.11-02303A?style=flat-square&logo=gradle&logoColor=white)
 ![Internet](https://img.shields.io/badge/Internet-non%20precisa-555555?style=flat-square)
-![Version](https://img.shields.io/badge/version-0.7.0-e9b44c?style=flat-square)
+![Version](https://img.shields.io/badge/version-0.8.0-e9b44c?style=flat-square)
 
 </div>
 
@@ -51,6 +51,7 @@ nomes (e as caras) da xente da casa, e un toque para chamar.
 - 🔢 **Grella a medida** — de 1 a 4 columnas e de 1 a 4 filas: 4 × 4 para 16 contactos, ou 2 × 3 para botóns enormes
 - ✏️ **Editor de botóns** — nome, teléfono, cor (8 de alto contraste) e activar ou desactivar cada botón desde o propio móbil
 - 📇 **Importar da axenda** — escolles un contacto e enche o número (e o nome, se estaba baleiro)
+- 🖼️ **Fotos** — unha foto da galería en círculo enriba do nome. Gárdase unha copia, así que non desaparece se se borra da galería
 - 📴 **Sen Internet** — os contactos gárdanse só no teléfono; a app nin sequera ten permiso de Internet
 
 ## Configuración
@@ -99,6 +100,7 @@ Toca un botón para editalo e preme **GARDAR**:
 | **Teléfono** | Admite espazos e prefixo (`+34 600 123 456`). Tamén vale un fixo |
 | **📇 Importar da axenda** | Escolles un número da axenda; se o nome estaba baleiro, tamén o enche |
 | **Cor do botón** | 8 cores de alto contraste. Sobre fondos claros o texto pasa a negro só |
+| **Foto** | Unha imaxe da galería, en círculo enriba do nome |
 | **Baleirar este botón** | Borra todos os datos do botón (hai que premer **GARDAR**) |
 
 No mesmo menú:
@@ -159,6 +161,11 @@ chamaXa/
 
 ## Evolución por versión
 
+### v0.8.0
+- **Foto opcional** en cada botón, co selector de fotos do sistema (sen permiso de galería).
+- A foto cópiase dentro da app, reducida a 512 px e coa rotación EXIF corrixida, tamén en Android 5.0.
+- As fotos que xa non usa ningún botón bórranse soas.
+
 ### v0.7.0
 - **Editor de cada botón**: nome (ata 20 caracteres), teléfono, cor e botón activo/desactivado.
 - **Importar da axenda**: Android só lle pasa á app o número escollido, sen permiso de contactos.
@@ -196,9 +203,9 @@ chamaXa/
 
 ## Folla de ruta
 
-- [ ] Fotos nos botóns
 - [ ] Tradución ao galego e ao castelán
 - [ ] Icona definitiva (*adaptive icon*) en `mipmap`
+- [ ] Política de privacidade e licenza para unha versión pública
 
 ## Autor
 
