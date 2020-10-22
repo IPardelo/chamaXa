@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Galego -->
+    <string name="aviso_sen_contactos">Mantén premida a esquina superior esquerda durante 10 segundos para configurar os contactos</string>
+    <string name="cd_chamar">Chamar a %1$s</string>
+    <string name="pista_acceso">⚙\nManter\n10 s</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="admin_titulo">Configuración</string>
+    <string name="admin_axuda">Toca un botón para editalo. Os cambios gárdanse ao momento.</string>
+    <string name="estado_chamadas">Chamadas directas</string>
+    <string name="conceder">Conceder</string>
+    <string name="estado_launcher">Pantalla de inicio predeterminada</string>
+    <string name="configurar">Configurar</string>
+    <string name="abrir_axustes">⚙  Abrir axustes do teléfono</string>
+    <string name="sair_config">SAÍR DA CONFIGURACIÓN</string>
+    <string name="slot_desactivado">%1$s\n(desactivado)</string>
+    <string name="slot_baleiro">Baleiro\n＋</string>
+    <string name="editor_titulo">Botón %1$d</string>
+    <string name="sen_vista_previa">(sen vista previa)</string>
+    <string name="boton_activo">Botón activo</string>
+    <string name="boton_activo_axuda">Se o desactivas, a cela queda baleira e non chama a ninguén.</string>
+    <string name="campo_nome">Nome</string>
+    <string name="campo_telefono">Teléfono</string>
+    <string name="importar_axenda">📇  Importar da axenda</string>
+    <string name="cor_boton">Cor do botón</string>
+    <string name="foto_opcional">Foto (opcional)</string>
+    <string name="cargando">Cargando…</string>
+    <string name="escoller_foto">Escoller foto</string>
+    <string name="cambiar_foto">Cambiar foto</string>
+    <string name="quitar_foto">Quitar foto</string>
+    <string name="gardar">GARDAR</string>
+    <string name="baleirar_boton">Baleirar este botón</string>
+    <string name="erro_imaxe">Non se puido cargar a imaxe</string>
+    <string name="erro_ler_numero">Non se puido ler o número</string>
+    <string name="erro_sen_axenda">Non hai ningunha app de contactos</string>
+    <string name="erro_sen_galeria">Non hai ningunha galería dispoñible</string>
+    <string name="erro_nome">Escribe un nome</string>
+    <string name="erro_telefono">Escribe un número de teléfono válido</string>
+    <string name="tamano_grella">Tamaño da grella</string>
+    <string name="tamano_grella_axuda">Mostraranse %1$d botóns. Os contactos das posicións que queden fóra non se borran.</string>
+    <string name="cambiar">Cambiar</string>
+    <string name="columnas">Columnas</string>
+    <string name="filas">Filas</string>
+</resources>
