@@ -155,7 +155,8 @@ chamaXa/
 │           ├── drawable/ic_launcher.xml  # Icona (grella de cores)
 │           ├── values/strings.xml        # Inglés (idioma por defecto)
 │           ├── values/themes.xml         # Tema escuro a pantalla completa
-│           └── values-gl/strings.xml     # Galego
+│           ├── values-gl/strings.xml     # Galego
+│           └── values-es/strings.xml     # Castelán
 │
 └── assets/                               # Banner e capturas do README
 ```

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Castelán -->
+    <string name="aviso_sen_contactos">Mantén pulsada la esquina superior izquierda durante 10 segundos para configurar los contactos</string>
+    <string name="cd_chamar">Llamar a %1$s</string>
+    <string name="pista_acceso">⚙\nMantener\n10 s</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="admin_titulo">Configuración</string>
+    <string name="admin_axuda">Toca un botón para editarlo. Los cambios se guardan al momento.</string>
+    <string name="estado_chamadas">Llamadas directas</string>
+    <string name="conceder">Conceder</string>
+    <string name="estado_launcher">Pantalla de inicio predeterminada</string>
+    <string name="configurar">Configurar</string>
+    <string name="abrir_axustes">⚙  Abrir ajustes del teléfono</string>
+    <string name="sair_config">SALIR DE LA CONFIGURACIÓN</string>
+    <string name="slot_desactivado">%1$s\n(desactivado)</string>
+    <string name="slot_baleiro">Vacío\n＋</string>
+    <string name="editor_titulo">Botón %1$d</string>
+    <string name="sen_vista_previa">(sin vista previa)</string>
+    <string name="boton_activo">Botón activo</string>
+    <string name="boton_activo_axuda">Si lo desactivas, la celda queda vacía y no llama a nadie.</string>
+    <string name="campo_nome">Nombre</string>
+    <string name="campo_telefono">Teléfono</string>
+    <string name="importar_axenda">📇  Importar de la agenda</string>
+    <string name="cor_boton">Color del botón</string>
+    <string name="foto_opcional">Foto (opcional)</string>
+    <string name="cargando">Cargando…</string>
+    <string name="escoller_foto">Elegir foto</string>
+    <string name="cambiar_foto">Cambiar foto</string>
+    <string name="quitar_foto">Quitar foto</string>
+    <string name="gardar">GUARDAR</string>
+    <string name="baleirar_boton">Vaciar este botón</string>
+    <string name="erro_imaxe">No se pudo cargar la imagen</string>
+    <string name="erro_ler_numero">No se pudo leer el número</string>
+    <string name="erro_sen_axenda">No hay ninguna app de contactos</string>
+    <string name="erro_sen_galeria">No hay ninguna galería disponible</string>
+    <string name="erro_nome">Escribe un nombre</string>
+    <string name="erro_telefono">Escribe un número de teléfono válido</string>
+    <string name="tamano_grella">Tamaño de la cuadrícula</string>
+    <string name="tamano_grella_axuda">Se mostrarán %1$d botones. Los contactos de las posiciones que queden fuera no se borran.</string>
+    <string name="cambiar">Cambiar</string>
+    <string name="columnas">Columnas</string>
+    <string name="filas">Filas</string>
+</resources>
