@@ -122,6 +122,17 @@ ChamaXa **non ten permiso de Internet**: non envía nada a ningures.
 Non pide acceso á axenda nin á galería: usa os selectores do sistema e só recibe o que escolles.
 Os contactos gárdanse en `SharedPreferences` e as fotos en `files/fotos/`; bórrase todo ao desinstalar.
 
+### 🌍 Idiomas
+
+| Carpeta | Idioma |
+|---|---|
+| `values/` | Inglés: úsase se o teléfono está noutro idioma sen tradución |
+| `values-gl/` | Galego |
+| `values-es/` | Castelán |
+
+Para engadir outro (por exemplo portugués), copia `values/strings.xml` a `values-pt/strings.xml`
+e traduce cada `<string>` sen cambiar o `name`. Respecta `%1$s` e `%1$d`, e non copies `app_name`.
+
 ### ⚙️ Parámetros axustables
 
 Ao comezo de `MainActivity.kt`:
