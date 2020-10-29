@@ -16,7 +16,7 @@ Unha pantalla de inicio para Android con botóns grandes de cores que chaman dir
 ![Android](https://img.shields.io/badge/Android-5.0+-3DDC84?style=flat-square&logo=android&logoColor=white)
 ![Gradle](https://img.shields.io/badge/Gradle-8.11-02303A?style=flat-square&logo=gradle&logoColor=white)
 ![Internet](https://img.shields.io/badge/Internet-non%20precisa-555555?style=flat-square)
-![Version](https://img.shields.io/badge/version-0.8.0-e9b44c?style=flat-square)
+![Version](https://img.shields.io/badge/version-0.9.0-e9b44c?style=flat-square)
 
 </div>
 
@@ -52,6 +52,7 @@ nomes (e as caras) da xente da casa, e un toque para chamar.
 - ✏️ **Editor de botóns** — nome, teléfono, cor (8 de alto contraste) e activar ou desactivar cada botón desde o propio móbil
 - 📇 **Importar da axenda** — escolles un contacto e enche o número (e o nome, se estaba baleiro)
 - 🖼️ **Fotos** — unha foto da galería en círculo enriba do nome. Gárdase unha copia, así que non desaparece se se borra da galería
+- 🌍 **Multilingüe** — galego, castelán e inglés, segundo o idioma do teléfono
 - 📴 **Sen Internet** — os contactos gárdanse só no teléfono; a app nin sequera ten permiso de Internet
 
 ## Configuración
@@ -174,6 +175,9 @@ chamaXa/
 
 ## Evolución por versión
 
+### v0.9.0
+- Interface en **galego** e **castelán**, ademais de inglés. A app usa o idioma do teléfono.
+
 ### v0.8.0
 - **Foto opcional** en cada botón, co selector de fotos do sistema (sen permiso de galería).
 - A foto cópiase dentro da app, reducida a 512 px e coa rotación EXIF corrixida, tamén en Android 5.0.
@@ -216,7 +220,6 @@ chamaXa/
 
 ## Folla de ruta
 
-- [ ] Tradución ao galego e ao castelán
 - [ ] Icona definitiva (*adaptive icon*) en `mipmap`
 - [ ] Política de privacidade e licenza para unha versión pública
 
