@@ -111,6 +111,19 @@ No mesmo menú:
 - **⚙ Abrir axustes do teléfono** — wifi, volume, desinstalar…
 - Se ninguén toca o menú en **3 minutos**, volve á grella e descarta o que non se gardou.
 
+### 🛡️ Blindar o teléfono antes de entregalo
+
+Os nomes dos menús cambian segundo a marca; se non atopas algo, usa o buscador de Axustes.
+
+1. **Non molestar** activado sempre, pero en *Persoas → Chamadas* escolle **Todos** e activa
+   **Chamadas repetidas**. ⚠️ Se non, tampouco soarán as chamadas da familia.
+2. Desactiva as notificacións das apps e as da pantalla de bloqueo.
+3. **Bloqueo de pantalla: Ningún**, tempo de espera de 2–5 minutos, timbre e letra ao máximo.
+4. Desactiva o asistente de voz e os xestos extra (dobre toque, paneis laterais…).
+5. Play Store sen actualizacións automáticas e *Batería → ChamaXa* → **Sen restricións**.
+6. Opcional: **fixar a app** con PIN. Proba antes unha chamada entrante e unha saínte: nalgunhas
+   marcas o modo fixado non deixa abrir a pantalla de chamada.
+
 ### 🔐 Privacidade e permisos
 
 ChamaXa **non ten permiso de Internet**: non envía nada a ningures.
