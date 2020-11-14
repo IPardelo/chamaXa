@@ -160,6 +160,15 @@ Ao comezo de `MainActivity.kt`:
 | `INACTIVIDADE_ADMIN_MS` | `180000` | Inactividade antes de saír do menú |
 | `PALETA` | 8 cores | Cores dispoñibles para os botóns |
 
+### 🩹 Problemas frecuentes
+
+- **Ao tocar un botón ábrese o marcador.** Falta o permiso: no menú, *Conceder* en *Chamadas directas*.
+- **O 112 non chama directamente.** É unha restrición de Android: ningunha app pode chamar aos números de emerxencia sen confirmación.
+- **Ao reiniciar aparece o escritorio antigo.** ChamaXa non é o launcher predeterminado: repite o paso 3 da posta en marcha.
+- **Non chegan as chamadas.** Revisa *Non molestar*: hai que permitir as chamadas en *Persoas → Chamadas*.
+- **Volver ao launcher orixinal.** No menú, *Cambiar* en *Pantalla de inicio predeterminada*. Para desinstalar:
+  *⚙ Abrir axustes → Aplicacións → ChamaXa → Desinstalar* (bórranse os contactos e as fotos).
+
 ## Estrutura xeral
 
 ```
