@@ -16,7 +16,7 @@ Unha pantalla de inicio para Android con botóns grandes de cores que chaman dir
 ![Android](https://img.shields.io/badge/Android-5.0+-3DDC84?style=flat-square&logo=android&logoColor=white)
 ![Gradle](https://img.shields.io/badge/Gradle-8.11-02303A?style=flat-square&logo=gradle&logoColor=white)
 ![Internet](https://img.shields.io/badge/Internet-non%20precisa-555555?style=flat-square)
-![Version](https://img.shields.io/badge/version-0.9.0-e9b44c?style=flat-square)
+![Version](https://img.shields.io/badge/version-1.0.0-e9b44c?style=flat-square)
 
 </div>
 
@@ -197,6 +197,10 @@ chamaXa/
 
 ## Evolución por versión
 
+### v1.0.0
+- Primeira versión estable.
+- README completo: como blindar o teléfono antes de entregalo e problemas frecuentes.
+
 ### v0.9.0
 - Interface en **galego** e **castelán**, ademais de inglés. A app usa o idioma do teléfono.
 
@@ -244,6 +248,7 @@ chamaXa/
 
 - [ ] Icona definitiva (*adaptive icon*) en `mipmap`
 - [ ] Política de privacidade e licenza para unha versión pública
+- [ ] Publicar na Google Play Store
 
 ## Autor
 
